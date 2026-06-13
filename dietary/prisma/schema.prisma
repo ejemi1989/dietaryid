@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  passwordHash        String?
+  name                String
+  allergies           Json
+  severeAllergies     String[]  @default([])
+  bio                 String?
+  avatarUrl           String?
+  locationCity        String?
+  locationCountry     String?
+  dateOfBirth         DateTime?
+  accountStatus       String    @default("active")
+  emailVerified       Boolean   @default(false)
+  isCreator           Boolean   @default(false)
+  creatorBio          String?
+  lastLogin           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  reviews             Review[]
+  earnings            CreatorEarning[]
+  guides              CommunityGuide[]
+  paymentSettings     CreatorPaymentSettings?
+  searchHistory       SearchHistory[]
+  followers           FollowRelation[] @relation("followers")
+  following           FollowRelation[] @relation("following")
+  messages            Message[]
+  restaurants         Restaurant[] @relation("restaurantOwners")
+  @@index([email])
+  @@index([locationCity])
+}
+
+model FollowRelation {
+  id          String   @id @default(cuid())
+  followerId  String
+  follower    User     @relation("followers", fields: [followerId], references: [id], onDelete: Cascade)
+  followingId String
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  @@unique([followerId, followingId])
+}
+
+model Message {
+  id            String   @id @default(cuid())
+  senderId      String
+  sender        User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  recipientId   String?
+  content       String
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  @@index([senderId])
+  @@index([recipientId])
+}
+
+model Restaurant {
+  id               String   @id @default(cuid())
+  name             String
+  description      String?
+  cuisineType      String?
+  phone            String?
+  email            String?
+  website          String?
+  addressLine1     String
+  city             String
+  postcode         String
+  avgSafetyRating  Float    @default(0)
+  totalReviews     Int      @default(0)
+  verifiedStatus   String   @default("unverified")
+  ownerId          String?
+  owner            User?    @relation("restaurantOwners", fields: [ownerId], references: [id], onDelete: SetNull)
+  operatingHours   Json?
+  hasSeating       Boolean  @default(true)
+  isTakeaway       Boolean  @default(true)
+  hasDelivery      Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  reviews          Review[]
+  menuItems        MenuItem[]
+  @@index([city])
+  @@index([avgSafetyRating])
+  @@index([isActive])
+}
+
+model MenuItem {
+  id             String   @id @default(cuid())
+  restaurantId   String
+  restaurant     Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  price          Float?
+  category       String?
+  allergens      String[] @default([])
+  isGlutenFree   Boolean  @default(false)
+  isNutFree      Boolean  @default(false)
+  isDairyFree    Boolean  @default(false)
+  isVerified     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  @@index([restaurantId])
+}
+
+model Review {
+  id                  String   @id @default(cuid())
+  restaurantId        String
+  restaurant          Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  creatorId           String
+  creator             User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  title               String?
+  content             String
+  safetyRating        Int
+  overallRating       Int
+  allergensMentioned  String[] @default([])
+  helpfulCount        Int      @default(0)
+  reviewStatus        String   @default("pending")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  @@index([restaurantId])
+  @@index([creatorId])
+  @@index([reviewStatus])
+  @@index([createdAt])
+}
+
+model CreatorEarning {
+  id           String   @id @default(cuid())
+  creatorId    String
+  creator      User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  earningType  String
+  amount       Float
+  reviewId     String?
+  guideId      String?
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+  @@index([creatorId])
+  @@index([status])
+}
+
+model CreatorPaymentSettings {
+  id              String   @id @default(cuid())
+  creatorId       String   @unique
+  creator         User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  stripeAccountId String?
+  paypalEmail     String?
+  taxCountry      String?
+  currentBalance  Float    @default(0)
+  lifetimeEarnings Float   @default(0)
+  lastPayoutDate  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model CommunityGuide {
+  id          String   @id @default(cuid())
+  creatorId   String
+  creator     User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  city        String
+  title       String
+  content     String
+  guideType   String
+  views       Int      @default(0)
+  helpfulCount Int     @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  @@index([city])
+}
+
+model CommunityPost {
+  id          String   @id @default(cuid())
+  creatorId   String
+  creator     User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  title       String
+  content     String
+  postType    String
+  allergens   String[] @default([])
+  replies     Int      @default(0)
+  helpful     Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model SearchHistory {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  searchQuery String
+  resultsCount Int     @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model PayoutBatch {
+  id             String   @id @default(cuid())
+  batchDate      DateTime
+  batchName      String
+  totalCreators  Int
+  totalAmount    Float
+  totalFees      Float
+  netAmount      Float
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+  transactions   PayoutTransaction[]
+}
+
+model PayoutTransaction {
+  id              String   @id @default(cuid())
+  creatorId       String
+  batchId         String
+  batch           PayoutBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  amount          Float
+  fees            Float
+  netAmount       Float
+  status          String   @default("pending")
+  stripePayoutId  String?
+  retryCount      Int      @default(0)
+  createdAt       DateTime @default(now())
+  @@index([creatorId])
+  @@index([batchId])
+}
+
+model EarningsDispute {
+  id              String   @id @default(cuid())
+  creatorId       String
+  creator         User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  disputeType     String
+  claimAmount     Float
+  description     String
+  status          String   @default("investigating")
+  resolution      String?
+  createdAt       DateTime @default(now())
+}
+
+model AdminActivityLog {
+  id          String   @id @default(cuid())
+  adminId     String
+  action      String
+  entityType  String
+  entityId    String?
+  reason      String?
+  createdAt   DateTime @default(now())
+}

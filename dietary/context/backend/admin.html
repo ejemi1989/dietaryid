@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DietaryID dashboard— Contacts</title>
+  <style>
+    :root {
+      --bg: #fff;
+      --sidebar-bg: #f7f7f5;
+      --border: #ececec;
+      --text: #1a1a1a;
+      --muted: #8a8a8a;
+      --hover: #f5f5f4;
+      --green-bg: #e3f3e6;
+      --green-tx: #2f7d3e;
+      --blue-bg: #e4eefb;
+      --blue-tx: #2f6bd1;
+      --gray-bg: #eeeeee;
+      --gray-tx: #666;
+      --yellow-bg: #f7f0d8;
+      --yellow-tx: #a08a2f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+      width: 100vw
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 16px 14px;
+      overflow-y: auto
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 4px 18px
+    }
+
+    .brand .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px
+    }
+
+    .brand .name {
+      font-weight: 600;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .brand .name svg {
+      width: 13px;
+      height: 13px
+    }
+
+    .quick {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 12px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      font-size: 14.5px;
+      color: #333
+    }
+
+    .quick .left {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .quick .key {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 11px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 14.5px;
+      color: #333;
+      position: relative;
+      margin-bottom: 1px
+    }
+
+    .nav-item:hover {
+      background: var(--hover)
+    }
+
+    .nav-item.active {
+      background: #fff;
+      font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .05)
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      stroke: #555
+    }
+
+    .nav-item .badge {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .nav-item .badge.count {
+      background: #e6e6e3;
+      border-radius: 20px;
+      padding: 1px 8px;
+      color: #555
+    }
+
+    .tag-new {
+      background: #ece8ff;
+      color: #6b4ee0;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 5px;
+      margin-left: auto
+    }
+
+    .nav-section {
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 16px 11px 6px
+    }
+
+    .user {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 6px 4px;
+      border-top: 1px solid var(--border)
+    }
+
+    .user img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%
+    }
+
+    .user .uname {
+      font-size: 14.5px;
+      font-weight: 500
+    }
+
+    .user .gear {
+      margin-left: auto;
+      color: var(--muted);
+      cursor: pointer
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      padding: 18px 26px 12px
+    }
+
+    .stat {
+      padding: 0 18px;
+      border-right: 1px solid var(--border)
+    }
+
+    .stat:last-child {
+      border-right: none
+    }
+
+    .stat .label {
+      font-size: 14px;
+      color: #444;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 8px
+    }
+
+    .stat .label svg {
+      width: 13px;
+      height: 13px;
+      color: #4caf50
+    }
+
+    .stat .value {
+      font-size: 30px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 8px
+    }
+
+    .stat .value small {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 400
+    }
+
+    .stat .spark {
+      margin-top: 10px;
+      height: 34px
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 26px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .tool {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 14.5px;
+      color: #444;
+      cursor: pointer;
+      background: none;
+      border: none
+    }
+
+    .tool svg {
+      width: 16px;
+      height: 16px
+    }
+
+    .tool input {
+      border: none;
+      outline: none;
+      font-size: 14.5px;
+      background: none;
+      width: 200px
+    }
+
+    .toolbar .customize {
+      margin-left: auto
+    }
+
+    .table-wrap {
+      flex: 1;
+      overflow-y: auto;
+      position: relative
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      text-align: left;
+      font-size: 11.5px;
+      letter-spacing: .05em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600
+    }
+
+    thead th:first-child {
+      width: 42px
+    }
+
+    tbody td {
+      padding: 13px 14px;
+      font-size: 14.5px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    tbody tr:hover {
+      background: var(--hover)
+    }
+
+    tbody tr.selected {
+      background: #f4f6fb
+    }
+
+    .cb {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      vertical-align: middle
+    }
+
+    .cb.checked {
+      background: #111;
+      border-color: #111
+    }
+
+    .cb.checked svg {
+      width: 11px;
+      height: 11px;
+      stroke: #fff
+    }
+
+    .name-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #ececec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+      flex-shrink: 0
+    }
+
+    .status {
+      font-size: 12.5px;
+      padding: 3px 11px;
+      border-radius: 7px;
+      display: inline-block
+    }
+
+    .s-active {
+      background: var(--green-bg);
+      color: var(--green-tx)
+    }
+
+    .s-new {
+      background: var(--blue-bg);
+      color: var(--blue-tx)
+    }
+
+    .s-non {
+      background: var(--gray-bg);
+      color: var(--gray-tx)
+    }
+
+    .s-vip {
+      background: var(--yellow-bg);
+      color: var(--yellow-tx)
+    }
+
+    .col-company {
+      color: #333
+    }
+
+    .col-pos,
+    .col-city {
+      color: #333
+    }
+
+    /* selection bar */
+    .selbar {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1d1d1d;
+      color: #fff;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      border-radius: 14px;
+      padding: 8px 10px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .3);
+      z-index: 50
+    }
+
+    .selbar.show {
+      display: flex
+    }
+
+    .selbar .x {
+      background: #000;
+      border-radius: 9px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer
+    }
+
+    .selbar .count {
+      padding: 0 16px;
+      font-size: 15px;
+      font-weight: 500
+    }
+
+    .selbar .act {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer
+    }
+
+    .selbar .act:hover {
+      background: #333
+    }
+
+    .selbar svg {
+      width: 18px;
+      height: 18px
+    }
+
+    .hamburger {
+      display: none
+    }
+
+    @media(max-width:980px) {
+      .sidebar {
+        position: fixed;
+        z-index: 100;
+        height: 100%;
+        left: -300px;
+        transition: .25s
+      }
+
+      .sidebar.open {
+        left: 0
+      }
+
+      .hamburger {
+        display: flex;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 60;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        width: 42px;
+        height: 42px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        border: none
+      }
+
+      .stat {
+        border: none
+      }
+
+      .stat:nth-child(n+3) .spark {
+        display: none
+      }
+
+      .col-pos,
+      .col-city {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  </div>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">D</div>
+        <div class="name">DietaryID <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
+            <polyline points="6 9 12 15 18 9" />
+          </svg></div>
+      </div>
+      <div class="quick">
+        <div class="left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg> Quick Actions</div>
+        <span class="key">/</span>
+      </div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M12 2l2 5 5 .5-4 3.5 1.5 5L12 18l-4.5 3 1.5-5-4-3.5 5-.5z" />
+        </svg> Assistant <span class="tag-new">NEW</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+        </svg> Notifications <span class="badge count">4</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <rect x="3" y="4" width="18" height="14" rx="2" />
+          <path d="M3 10h18" />
+        </svg> My hub</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg> Meal Plans <span class="badge count">1</span></div>
+
+      <div class="nav-section">Work</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg> Dashboard</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+        </svg> Users</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M3 6h18" />
+          <path d="M3 12h18" />
+          <path d="M3 18h18" />
+        </svg> Recipes</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M12 2v20M2 12h20" />
+        </svg> Allergens</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
+        </svg> Finance</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M3 3v18h18" />
+          <path d="M7 16l4-6 4 3 5-7" />
+        </svg> Analytics and reports</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg> Documents</div>
+
+      <div class="nav-section">Team</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
+          <circle cx="9" cy="7" r="4" />
+        </svg> Members</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9 12l2 2 4-4" />
+        </svg> Tasks</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+        </svg> Time management</div>
+
+      <div class="user">
+        <img src="https://i.pravatar.cc/80?img=47" alt="">
+        <div class="uname">Emily Davis</div>
+        <svg class="gear" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="18" x2="20" y2="18" />
+          <circle cx="9" cy="6" r="2" />
+          <circle cx="15" cy="12" r="2" />
+          <circle cx="9" cy="18" r="2" />
+        </svg>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Total users <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="7" y1="17" x2="17" y2="7" />
+              <polyline points="7 7 17 7 17 17" />
+            </svg></div>
+          <div class="value">12,936</div>
+          <svg class="spark" viewBox="0 0 200 34">
+            <polyline fill="none" stroke="#222" stroke-width="1.5"
+              points="0,28 30,26 60,22 90,20 120,15 150,13 180,8 200,6" />
+          </svg>
+        </div>
+        <div class="stat">
+          <div class="label">Active profiles <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <line x1="7" y1="17" x2="17" y2="7" />
+              <polyline points="7 7 17 7 17 17" />
+            </svg></div>
+          <div class="value">11,856 <small>94%</small></div>
+          <svg class="spark" viewBox="0 0 200 34">
+            <polyline fill="none" stroke="#222" stroke-width="1.5"
+              points="0,26 25,24 50,27 75,20 100,22 125,16 150,18 175,11 200,9" />
+          </svg>
+        </div>
+        <div class="stat">
+          <div class="label">Flagged meals</div>
+          <div class="value">80 <small>6%</small></div>
+          <svg class="spark" viewBox="0 0 200 34">
+            <line x1="0" y1="17" x2="200" y2="17" stroke="#ccc" stroke-width="1" stroke-dasharray="2 4" />
+            <polygon points="40,8 36,2 44,2" fill="#222" />
+          </svg>
+        </div>
+        <div class="stat">
+          <div class="label">Scan velocity</div>
+          <div class="value">1:42 <small>Normal</small></div>
+          <svg class="spark" viewBox="0 0 200 34">
+            <line x1="0" y1="17" x2="200" y2="17" stroke="#ccc" stroke-width="1" stroke-dasharray="1 3" />
+            <polygon points="120,8 116,2 124,2" fill="#222" />
+          </svg>
+        </div>
+        <div class="stat">
+          <div class="label">Data health</div>
+          <div class="value">82%</div>
+          <svg class="spark" viewBox="0 0 200 34">
+            <line x1="0" y1="17" x2="200" y2="17" stroke="#ccc" stroke-width="1" stroke-dasharray="1 3" />
+            <polygon points="190,8 186,2 194,2" fill="#222" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+          </svg> Filters</button>
+        <div class="tool"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg><input id="search" placeholder="Search"></div>
+        <button class="tool customize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 17l6-6 4 4 8-8" />
+          </svg> Customize</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><span class="cb" id="selectAll" onclick="toggleAll()"></span></th>
+              <th>Name ▾</th>
+              <th>App / Diet</th>
+              <th>Role</th>
+              <th>City</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <div class="selbar" id="selbar">
+    <div class="x" onclick="clearSel()"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg></div>
+    <div class="count" id="selcount">Selected: 0</div>
+    <div class="act" title="Export"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="17 8 12 3 7 8" />
+        <line x1="12" y1="3" x2="12" y2="15" />
+      </svg></div>
+    <div class="act" title="Archive"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <rect x="3" y="4" width="18" height="4" />
+        <path d="M5 8v12h14V8" />
+        <line x1="10" y1="12" x2="14" y2="12" />
+      </svg></div>
+    <div class="act" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      </svg></div>
+    <div class="act" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <circle cx="5" cy="12" r="1" />
+        <circle cx="12" cy="12" r="1" />
+        <circle cx="19" cy="12" r="1" />
+      </svg></div>
+  </div>
+
+  <script>
+    const data = [
+      ["Amelia Evans", "FreshTrack", "Gluten-free Lead", "Niagara Falls", "Active"],
+      ["Ava Thompson", "NutriMap", "Vegan Curator", "Saratoga Springs", "New"],
+      ["Benjamin Taylor", "SafeBite", "Allergy Analyst", "Troy", "Active"],
+      ["Charlotte Campbell", "PureMeal", "Diet Manager", "Ithaca", "Non-targeted"],
+      ["Emma Collins", "GreenPlate", "Recipe Lead", "Syracuse", "Active"],
+      ["Ethan Cooper", "BioRoots", "Nutrition Director", "White Plains", "VIP"],
+      ["Isabella Stewart", "LeafLink", "Wellness Coord", "Binghamton", "Active"],
+      ["James Davis", "CalorieWave", "Data Analyst", "Poughkeepsie", "New"],
+      ["Liam Parker", "Solaris Edge", "Macro Analyst", "Rochester", "New"],
+      ["Lucas Bennett", "Vaulted", "Compliance Mgr", "Mount Vernon", "Non-targeted"],
+      ["Mason Brooks", "EcoZen Foods", "Data Analyst", "Schenectady", "Active"],
+      ["Mia Bryant", "Iron Ledger", "Labeling Spec", "New Rochelle", "Active"],
+      ["Noah Mitchell", "ByteBloom", "Product Owner", "Yonkers", "Non-targeted"],
+      ["Oliver Baker", "NeuralFlow", "Allergen Lead", "Albany", "Active"],
+      ["Sophia Dougherty", "Quantum Mint", "Diet Coach", "Buffalo", "New"]
+    ];
+    const initialChecked = [3, 9, 12];
+    const statusClass = { Active: "s-active", New: "s-new", "Non-targeted": "s-non", VIP: "s-vip" };
+    const tbody = document.getElementById("tbody");
+
+    function render() {
+      tbody.innerHTML = "";
+      data.forEach((r, i) => {
+        const tr = document.createElement("tr");
+        tr.dataset.i = i;
+        const initials = r[0].split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+        tr.innerHTML = `
+      <td><span class="cb" onclick="toggleRow(${i})"></span></td>
+      <td><div class="name-cell"><div class="avatar">${initials}</div>${r[0]}</div></td>
+      <td class="col-company">${r[1]}</td>
+      <td class="col-pos">${r[2]}</td>
+      <td class="col-city">${r[3]}</td>
+      <td><span class="status ${statusClass[r[4]]}">${r[4]}</span></td>`;
+        tbody.appendChild(tr);
+      });
+      initialChecked.forEach(i => setRow(i, true));
+      update();
+    }
+    const sel = new Set();
+    function setRow(i, on) {
+      const tr = tbody.querySelector(`tr[data-i="${i}"]`);
+      if (!tr) return;
+      const cb = tr.querySelector(".cb");
+      if (on) { sel.add(i); tr.classList.add("selected"); cb.classList.add("checked"); cb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'; }
+      else { sel.delete(i); tr.classList.remove("selected"); cb.classList.remove("checked"); cb.innerHTML = ''; }
+    }
+    function toggleRow(i) { setRow(i, !sel.has(i)); update(); }
+    function toggleAll() {
+      const all = sel.size === data.length;
+      data.forEach((_, i) => setRow(i, !all)); update();
+    }
+    function clearSel() { data.forEach((_, i) => setRow(i, false)); update(); }
+    function update() {
+      const bar = document.getElementById("selbar");
+      document.getElementById("selcount").textContent = "Selected: " + sel.size;
+      bar.classList.toggle("show", sel.size > 0);
+      const sa = document.getElementById("selectAll");
+      if (sel.size === data.length) { sa.classList.add("checked"); sa.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'; }
+      else { sa.classList.remove("checked"); sa.innerHTML = ''; }
+    }
+    render();
+
+    document.getElementById("search").addEventListener("input", e => {
+      const q = e.target.value.toLowerCase();
+      tbody.querySelectorAll("tr").forEach((tr, i) => {
+        tr.style.display = data[i].join(" ").toLowerCase().includes(q) ? "" : "none";
+      });
+    });
+    document.querySelectorAll(".nav-item").forEach(n => n.addEventListener("click", function () {
+      document.querySelectorAll(".nav-item").forEach(x => x.classList.remove("active"));
+      this.classList.add("active");
+    }));
+  </script>
+</body>
+
+</html>

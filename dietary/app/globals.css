@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter);
+
+  --color-navy: #16224a;
+  --color-navy-soft: #3b4a76;
+  --color-navy-dark: #21306a;
+  --color-ink: #1d2a52;
+  --color-muted: #5d6a8c;
+  --color-peach: #ff8a5c;
+  --color-coral: #ff6a4d;
+  --color-pink: #ff6a8e;
+  --color-teal: #37b3a0;
+  --color-teal-dark: #1e8a72;
+  --color-indigo: #5b6ee8;
+  --color-indigo-light: #7c9bf2;
+  --color-green-dot: #37b3a0;
+  --color-safe-bg: #d9f4ec;
+  --color-safe-text: #1e8a72;
+  --color-mock-row: #f6f8fd;
+  --color-faq-border: #e3e7f3;
+  --color-tag-border: #e6e9f5;
+  --color-dash-stat: #f7f9fe;
+  --color-foot-text: #c4cce6;
+  --color-foot-link: #aeb8d8;
+  --color-foot-muted: #9aa6cc;
+  --color-foot-bottom: #8e9bc4;
+  --color-nav-hover: #eef1fb;
+  --color-btn-border: #dde2f0;
+  --color-chat-bg: #fffdfb;
+  --color-chat-suggest-border: #eef0f8;
+  --color-chat-suggest-hover: #ffc1a8;
+  --color-fc-bg: #fffdfb;
+  --color-ring-track: #f2e4e8;
+  --color-feature-card: #fffdfc;
+  --color-feature-mini: linear-gradient(135deg, #f2f5ff, #fdf0ec);
+  --color-t1: linear-gradient(180deg, #fffdfc, #fdeee8);
+  --color-t2: linear-gradient(180deg, #eef2ff, #fdeff0);
+  --color-t3: linear-gradient(180deg, #fffdfc, #eef4ff);
+  --color-cta-bg: linear-gradient(180deg, #fdeae2, #f9e3e6);
+  --color-faq-visual: linear-gradient(135deg, #dff0ee, #e8ecfb);
+
+  --color-admin-bg: #fff;
+  --color-admin-sidebar: #f7f7f5;
+  --color-admin-hover: #f5f5f4;
+  --color-admin-border: #ececec;
+  --color-admin-text: #1a1a1a;
+  --color-admin-muted: #8a8a8a;
+  --color-admin-nav-text: #333;
+  --color-admin-stat-label: #444;
+  --color-admin-dark: #111;
+  --color-admin-sel-row: #f4f6fb;
+  --color-admin-active-bg: #e3f3e6;
+  --color-admin-active-text: #2f7d3e;
+  --color-admin-new-bg: #e4eefb;
+  --color-admin-new-text: #2f6bd1;
+  --color-admin-non-bg: #eeeeee;
+  --color-admin-non-text: #666;
+  --color-admin-vip-bg: #f7f0d8;
+  --color-admin-vip-text: #a08a2f;
+  --color-admin-tag-bg: #ece8ff;
+  --color-admin-tag-text: #6b4ee0;
+  --color-admin-badge-bg: #e6e6e3;
+  --color-admin-cb-border: #ccc;
+  --color-admin-avatar-bg: #ececec;
+  --color-admin-avatar-text: #555;
+  --color-admin-nav-icon: #555;
+  --color-admin-icon-stroke: #333;
+  --color-admin-icon-secondary: #666;
+  --color-admin-selbar-bg: #1d1d1d;
+  --color-admin-selbar-hover: #333;
+  --color-admin-sel-close: #000;
+  --color-admin-spark: #222;
+  --color-admin-trend: #4caf50;
+  --color-admin-dash-line: #ccc;
+
+  --shadow-soft: 0 14px 40px rgba(30, 45, 90, 0.10);
+  --shadow-card: 0 8px 28px rgba(30, 45, 90, 0.08);
+  --shadow-float: 0 16px 44px rgba(30, 45, 90, 0.14);
+  --shadow-chat: 0 24px 70px rgba(30, 45, 90, 0.18);
+  --shadow-orb: 0 10px 30px rgba(255, 118, 108, 0.45);
+  --shadow-suggest: 0 4px 12px rgba(30, 45, 90, 0.05);
+  --shadow-dash: 0 -10px 50px rgba(30, 45, 90, 0.12);
+  --shadow-feature-hover: 0 22px 50px rgba(30, 45, 90, 0.14);
+  --shadow-btn-light-hover: 0 12px 30px rgba(30, 45, 90, 0.16);
+
+  --radius-xl: 28px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 11px;
+  --radius-icon: 16px;
+  --radius-pill: 9999px;
+}
+
+body {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--color-ink);
+  background: linear-gradient(135deg, #aebbe8 0%, #c3cdf0 35%, #e7d4e2 70%, #f3d4cf 100%);
+  min-height: 100vh;
+  margin: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+html {
+  scroll-behavior: smooth;
+}

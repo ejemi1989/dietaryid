@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeBite — Eat normally. Find safely.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16224a;
+  --navy-soft:#3b4a76;
+  --ink:#1d2a52;
+  --muted:#5d6a8c;
+  --peach:#ff8a5c;
+  --coral:#ff6a4d;
+  --pill:#ffffff;
+  --radius-lg:28px;
+  --radius-md:18px;
+  --shadow-soft:0 14px 40px rgba(30,45,90,.10);
+  --shadow-card:0 8px 28px rgba(30,45,90,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--ink);
+  background:linear-gradient(135deg,#aebbe8 0%,#c3cdf0 35%,#e7d4e2 70%,#f3d4cf 100%);
+  min-height:100vh;
+  padding:24px;
+}
+.frame{
+  max-width:1240px;
+  margin:0 auto;
+  background:linear-gradient(180deg,#dfe6fb 0%,#f3eef6 45%,#fbe9e3 100%);
+  border-radius:40px;
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(30,45,90,.25);
+}
+.inner{padding:32px clamp(16px,5vw,64px) 0}
+
+/* ---------- NAV ---------- */
+nav{
+  background:var(--pill);
+  border-radius:18px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;
+  box-shadow:var(--shadow-soft);
+  position:relative;
+  z-index:30;
+}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:var(--navy);text-decoration:none}
+.logo-badge{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,#ff9a6c,#ff6a8e);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;
+}
+.nav-links{display:flex;gap:6px;list-style:none}
+.nav-links a{
+  text-decoration:none;color:var(--navy-soft);font-size:14.5px;font-weight:500;
+  padding:9px 14px;border-radius:10px;transition:.2s;display:block;
+}
+.nav-links a:hover,.nav-links a.active{background:#eef1fb;color:var(--navy)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn{
+  border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:14.5px;
+  padding:11px 22px;border-radius:11px;transition:.2s;text-decoration:none;display:inline-block;text-align:center;
+}
+.btn-outline{background:#fff;border:1.5px solid #dde2f0;color:var(--navy)}
+.btn-outline:hover{border-color:var(--navy);transform:translateY(-1px)}
+.btn-dark{background:var(--navy);color:#fff}
+.btn-dark:hover{background:#21306a;transform:translateY(-1px)}
+.btn-light{background:#fff;color:var(--navy);box-shadow:var(--shadow-card)}
+.btn-light:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(30,45,90,.16)}
+.hamburger{display:none;background:none;border:none;font-size:24px;color:var(--navy);cursor:pointer;padding:6px}
+.mobile-menu{
+  display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:#fff;border-radius:16px;box-shadow:var(--shadow-soft);padding:12px;flex-direction:column;gap:4px;
+}
+.mobile-menu a{text-decoration:none;color:var(--navy);font-weight:500;padding:12px 14px;border-radius:10px}
+.mobile-menu a:hover{background:#eef1fb}
+.mobile-menu.open{display:flex}
+
+/* ---------- HERO ---------- */
+.hero{text-align:center;padding:70px 0 30px;position:relative}
+.hero h1{
+  font-size:clamp(36px,5.6vw,62px);font-weight:800;line-height:1.12;color:var(--navy);
+  letter-spacing:-1.5px;
+}
+.hero p{
+  max-width:520px;margin:22px auto 0;color:var(--muted);font-size:16px;line-height:1.6;
+}
+.hero-visual{
+  position:relative;max-width:920px;margin:50px auto 0;min-height:480px;
+}
+.chat-card{
+  position:relative;z-index:5;max-width:380px;margin:0 auto;background:#fffdfb;
+  border-radius:24px;box-shadow:0 24px 70px rgba(30,45,90,.18);padding:22px 22px 26px;
+  text-align:center;
+}
+.chat-head{display:flex;align-items:center;justify-content:space-between;color:var(--navy-soft);font-weight:600;font-size:15px}
+.chat-head span:first-child,.chat-head span:last-child{font-size:18px;cursor:pointer;opacity:.6}
+.chat-orb{
+  width:64px;height:64px;border-radius:50%;margin:26px auto 22px;
+  background:radial-gradient(circle at 30% 30%,#ffb37c,#ff6a8e);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;
+  box-shadow:0 10px 30px rgba(255,118,108,.45);
+  animation:pulse 3s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.chat-card .desc{color:var(--navy-soft);font-size:13.5px;line-height:1.55;max-width:280px;margin:0 auto}
+.chat-suggest{
+  margin:18px auto 0;background:#fff;border:1px solid #eef0f8;border-radius:14px;
+  padding:12px 14px;font-size:12.5px;color:var(--muted);text-align:left;max-width:300px;
+  box-shadow:0 4px 12px rgba(30,45,90,.05);cursor:pointer;transition:.2s;
+}
+.chat-suggest:hover{border-color:#ffc1a8}
+.chat-input{
+  margin:16px auto 0;display:flex;align-items:center;gap:10px;max-width:320px;
+  border-radius:999px;padding:3px;
+  background:linear-gradient(90deg,#ff8a5c,#ff6a8e);
+}
+.chat-input input{
+  flex:1;border:none;outline:none;border-radius:999px;padding:11px 16px;font-family:inherit;font-size:13px;color:var(--ink);
+}
+.chat-input button{
+  background:none;border:none;color:#fff;font-size:17px;cursor:pointer;padding:0 12px 0 2px;
+}
+.float-card{
+  position:absolute;background:#fffdfb;border-radius:18px;box-shadow:0 16px 44px rgba(30,45,90,.14);
+  padding:16px 18px;z-index:4;
+}
+.fc-1{top:30px;left:2%;transform:rotate(-7deg);width:225px}
+.fc-2{top:140px;left:6%;transform:rotate(-4deg);width:210px}
+.fc-3{bottom:40px;left:9%;transform:rotate(-6deg);width:215px}
+.fc-4{top:15px;right:4%;transform:rotate(6deg);width:200px}
+.fc-5{bottom:55px;right:6%;transform:rotate(5deg);width:215px}
+.float-card .big{font-size:24px;font-weight:800;color:var(--navy)}
+.float-card .sm{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.fc-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:8px}
+.ring{
+  width:84px;height:84px;border-radius:50%;margin:8px auto;
+  background:conic-gradient(#ff8a5c 0 88%,#f2e4e8 88% 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+.ring .ring-in{width:64px;height:64px;border-radius:50%;background:#fffdfb;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .ring-in b{font-size:17px;color:var(--navy)}
+.ring .ring-in small{font-size:8.5px;color:var(--muted)}
+.hero-ctas{display:flex;gap:14px;justify-content:center;margin:46px 0 70px;flex-wrap:wrap;position:relative;z-index:6}
+
+/* partners */
+.partners{text-align:center;padding:30px 0 60px}
+.partners h3{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:34px}
+.partner-row{display:flex;justify-content:center;gap:clamp(24px,5vw,64px);flex-wrap:wrap;opacity:.55}
+.partner-row span{font-size:18px;font-weight:700;color:#6b7694;display:flex;align-items:center;gap:7px}
+
+/* ---------- FEATURES ---------- */
+.section{padding:70px 0}
+.tag{
+  display:inline-block;background:#fff;border:1px solid #e6e9f5;border-radius:999px;
+  padding:6px 16px;font-size:12.5px;font-weight:600;color:var(--navy-soft);
+}
+.feat-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:44px}
+.feat-head h2{font-size:clamp(30px,4vw,44px);font-weight:800;color:var(--navy);letter-spacing:-1px;line-height:1.15;margin-top:16px}
+.cards-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px}
+.feature-card{
+  background:#fffdfc;border-radius:var(--radius-lg);padding:30px 28px;box-shadow:var(--shadow-card);
+  transition:.25s;cursor:default;
+}
+.feature-card:hover{transform:translateY(-6px);box-shadow:0 22px 50px rgba(30,45,90,.14)}
+.feature-icon{
+  width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:20px;color:#fff;
+}
+.fi-1{background:linear-gradient(135deg,#ff9a6c,#ff6a8e)}
+.fi-2{background:linear-gradient(135deg,#7c9bf2,#5b6ee8)}
+.fi-3{background:linear-gradient(135deg,#5fcfb2,#37b3a0)}
+.feature-card h3{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.feature-card p{font-size:14px;color:var(--muted);line-height:1.65}
+.feature-card .mini{
+  margin-top:22px;background:linear-gradient(135deg,#f2f5ff,#fdf0ec);border-radius:14px;padding:14px 16px;
+  font-size:12.5px;color:var(--navy-soft);display:flex;align-items:center;gap:10px;
+}
+.mini .dot{width:8px;height:8px;border-radius:50%;background:#37b3a0;flex-shrink:0;animation:pulse 2s infinite}
+
+/* ---------- TESTIMONIALS ---------- */
+.center-head{text-align:center;margin-bottom:46px}
+.center-head h2{font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--navy);margin:16px 0 12px;letter-spacing:-1px}
+.center-head p{color:var(--muted);font-size:14px}
+.t-card{
+  border-radius:var(--radius-lg);padding:28px 26px;box-shadow:var(--shadow-card);
+  display:flex;flex-direction:column;gap:18px;transition:.25s;
+}
+.t-card:hover{transform:translateY(-5px)}
+.t-1{background:linear-gradient(180deg,#fffdfc,#fdeee8)}
+.t-2{background:linear-gradient(180deg,#eef2ff,#fdeff0)}
+.t-3{background:linear-gradient(180deg,#fffdfc,#eef4ff)}
+.t-brand{font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;font-size:15px}
+.t-card blockquote{font-size:13.5px;color:var(--navy-soft);line-height:1.7;flex:1}
+.t-person{display:flex;align-items:center;gap:12px}
+.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px}
+.t-person b{display:block;font-size:14px;color:var(--navy)}
+.t-person small{color:var(--muted);font-size:12px}
+
+/* ---------- FAQ ---------- */
+.faq-wrap{display:grid;grid-template-columns:1fr 1.15fr;gap:40px;align-items:start}
+.faq-visual{
+  background:linear-gradient(135deg,#dff0ee,#e8ecfb);border-radius:var(--radius-lg);padding:36px;
+  display:flex;align-items:center;justify-content:center;min-height:320px;
+}
+.faq-visual .mock{
+  background:#fff;border-radius:18px;box-shadow:var(--shadow-soft);padding:20px;width:100%;max-width:300px;
+}
+.mock h4{font-size:14px;color:var(--navy);margin-bottom:14px}
+.mock-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;margin-bottom:6px;background:#f6f8fd;font-size:12px;color:var(--navy-soft)}
+.mock-row .num{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ff9a6c,#ff6a8e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.mock-row .pill-ok{margin-left:auto;background:#d9f4ec;color:#1e8a72;font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px}
+.faq-item{border-bottom:1px solid #e3e7f3}
+.faq-q{
+  width:100%;background:none;border:none;font-family:inherit;font-size:16px;font-weight:600;color:var(--navy);
+  display:flex;justify-content:space-between;align-items:center;padding:20px 4px;cursor:pointer;text-align:left;gap:16px;
+}
+.faq-q .chev{transition:transform .3s;color:var(--muted);flex-shrink:0}
+.faq-item.open .chev{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;color:var(--muted);font-size:14px;line-height:1.65}
+.faq-item.open .faq-a{max-height:200px}
+.faq-a div{padding:0 4px 20px}
+
+/* ---------- CTA ---------- */
+.cta{
+  background:linear-gradient(180deg,#fdeae2,#f9e3e6);border-radius:var(--radius-lg);
+  text-align:center;padding:60px 30px 0;margin:40px 0 0;overflow:hidden;
+}
+.cta h2{font-size:clamp(28px,4vw,42px);font-weight:800;color:var(--navy);margin:16px 0 26px;letter-spacing:-1px;line-height:1.15}
+.cta .dash-mock{
+  max-width:760px;margin:46px auto 0;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -10px 50px rgba(30,45,90,.12);
+  padding:20px 22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;text-align:left;
+}
+.dash-stat{background:#f7f9fe;border-radius:12px;padding:14px}
+.dash-stat .lbl{font-size:11px;color:var(--muted)}
+.dash-stat .val{font-size:19px;font-weight:800;color:var(--navy);margin-top:4px}
+.dash-stat .chg{font-size:10.5px;color:#1e8a72;font-weight:600}
+
+/* ---------- FOOTER ---------- */
+footer{background:var(--navy);color:#c4cce6;margin-top:80px;padding:54px clamp(16px,5vw,64px) 28px}
+.foot-grid{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:36px;max-width:1100px;margin:0 auto 44px}
+.foot-grid h5{color:#fff;font-size:14px;margin-bottom:16px}
+.foot-grid ul{list-style:none}
+.foot-grid li{margin-bottom:10px}
+.foot-grid a{color:#aeb8d8;text-decoration:none;font-size:13.5px;transition:.2s}
+.foot-grid a:hover{color:#fff}
+.foot-brand p{font-size:13px;line-height:1.6;margin-top:14px;max-width:280px;color:#9aa6cc}
+.foot-bottom{
+  border-top:1px solid rgba(255,255,255,.12);padding-top:22px;display:flex;justify-content:space-between;
+  align-items:center;gap:14px;flex-wrap:wrap;max-width:1100px;margin:0 auto;font-size:12.5px;color:#8e9bc4;
+}
+.foot-bottom .demo-toggle{background:none;border:1px solid rgba(255,255,255,.25);color:#aeb8d8;font-size:11.5px;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit}
+.foot-bottom .demo-toggle:hover{color:#fff;border-color:#fff}
+
+/* toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--navy);color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:.35s;z-index:99;pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:900px){
+  .float-card{display:none}
+  .hero-visual{min-height:auto}
+  .faq-wrap{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  .nav-links,.nav-right .btn-outline{display:none}
+  .hamburger{display:block}
+  body{padding:10px}
+  .frame{border-radius:24px}
+}
+@media(max-width:480px){
+  .foot-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="inner">
+
+    <!-- NAV -->
+    <nav id="navbar">
+      <a class="logo" href="#" id="logoLink">
+        <span class="logo-badge">🍽️</span> SafeBite
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Product</a></li>
+        <li><a href="#pricing" data-page="Pricing">Pricing</a></li>
+        <li><a href="#resources" data-page="Resources">Resources</a></li>
+        <li><a href="#blog" data-page="Blog">Blog</a></li>
+        <li><a href="#signin" id="signInLink">Sign in</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="#" class="btn btn-dark" id="navCta">Sign up</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+      </div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#features">Product</a>
+        <a href="#pricing" data-page="Pricing">Pricing</a>
+        <a href="#resources" data-page="Resources">Resources</a>
+        <a href="#blog" data-page="Blog">Blog</a>
+        <a href="#signin" id="signInLinkMobile">Sign in</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+      <h1>Eat normally.<br>Find safely.</h1>
+      <p>Discover allergy-safe restaurants and dishes verified by people like you. Eat out with confidence, connect with your community, and never second-guess a menu again.</p>
+
+      <div class="hero-visual">
+        <!-- floating cards -->
+        <div class="float-card fc-1">
+          <div class="fc-icon" style="background:#fdeae0;color:#ff7a4d">🥗</div>
+          <div class="big">98%</div>
+          <div class="sm">Safe match accuracy on verified dishes</div>
+        </div>
+        <div class="float-card fc-2">
+          <div class="fc-icon" style="background:#e6ecfd;color:#5b6ee8">📍</div>
+          <div class="big">12,480</div>
+          <div class="sm">Allergy-verified restaurants near you</div>
+        </div>
+        <div class="float-card fc-3">
+          <div class="fc-icon" style="background:#dff4ee;color:#1e8a72">💬</div>
+          <div class="big">+5.9% ↑</div>
+          <div class="sm">Community reviews this week (2,134 new)</div>
+        </div>
+        <div class="float-card fc-4">
+          <div class="sm" style="font-weight:700;color:var(--navy);font-size:13px">Safe Dishes Found</div>
+          <div class="big" style="margin-top:6px">4,682</div>
+          <div class="sm">gluten-free · nut-free · dairy-free</div>
+        </div>
+        <div class="float-card fc-5">
+          <div class="sm" style="font-weight:700;color:var(--navy);font-size:13px;text-align:center">Average Safety Score</div>
+          <div class="ring"><div class="ring-in"><b>88%</b><small>Target: 93</small></div></div>
+          <div class="sm" style="text-align:center">↑ 2.4% from last month</div>
+        </div>
+
+        <!-- chat card -->
+        <div class="chat-card">
+          <div class="chat-head">
+            <span title="Close">✕</span>
+            New search
+            <span>✦</span>
+          </div>
+          <div class="chat-orb">✦</div>
+          <p class="desc">Ask SafeBite to find restaurants and dishes that match your allergy profile, anywhere you go.</p>
+          <div class="chat-suggest" onclick="fillSuggest(this)">Where can I find nut-free Thai food open near me right now?</div>
+          <form class="chat-input" id="chatForm">
+            <input type="text" id="chatInput" placeholder="Ask or search for anything" aria-label="Search">
+            <button type="submit" aria-label="Send">➤</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="hero-ctas">
+        <a href="#" class="btn btn-dark" id="startFreeBtn" style="padding:14px 30px">Start free</a>
+        <a href="#features" class="btn btn-light" id="seeHowBtn" style="padding:14px 30px">See how it works</a>
+      </div>
+    </header>
+
+    <!-- PARTNERS -->
+    <section class="partners">
+      <h3>Our trusted partners</h3>
+      <div class="partner-row">
+        <span>⚡ hotjar</span>
+        <span>❄ loom</span>
+        <span>✳ Lattice</span>
+        <span>🐘 Evernote</span>
+        <span>⚡ hotjar</span>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <div class="feat-head">
+        <div>
+          <span class="tag">Benefits</span>
+          <h2>Why thousands trust<br>SafeBite every day</h2>
+        </div>
+        <a href="#features" class="btn btn-dark" id="learnMoreBtn">Learn more</a>
+      </div>
+      <div class="cards-3">
+        <article class="feature-card">
+          <div class="feature-icon fi-1">🔍</div>
+          <h3>Find Safely</h3>
+          <p>Search restaurants and dishes filtered by your exact allergy profile. Every listing is verified by our community and cross-checked against menus, so you always know what's safe before you order.</p>
+          <div class="mini"><span class="dot"></span> 12,480 verified spots · updated in real time</div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon fi-2">🤝</div>
+          <h3>Connect with Peers</h3>
+          <p>Join a community of people with the same dietary needs as you. Share experiences, swap restaurant tips, and get honest answers from people who actually understand your allergies.</p>
+          <div class="mini"><span class="dot"></span> 48k members · 2,100+ daily conversations</div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon fi-3">💸</div>
+          <h3>Earn as Creator</h3>
+          <p>Review dishes, verify menus, and create safe-eating guides for your city. Top contributors earn real rewards while helping thousands of others eat out without fear.</p>
+          <div class="mini"><span class="dot"></span> $120k+ paid to creators this year</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section" id="testimonials">
+      <div class="center-head">
+        <span class="tag">Testimonials</span>
+        <h2>What our community is saying</h2>
+        <p>Trusted by people with allergies, intolerances and dietary restrictions worldwide</p>
+      </div>
+      <div class="cards-3">
+        <article class="t-card t-1">
+          <div class="t-brand">🌾 Celiac &amp; thriving</div>
+          <blockquote>"SafeBite is by far my favorite tool for living with celiac disease. It's incredibly thorough yet surprisingly simple. I went from anxiously interrogating waiters to just… eating. The freedom it gives me is unmatched."</blockquote>
+          <div class="t-person">
+            <div class="avatar" style="background:linear-gradient(135deg,#ff9a6c,#ff6a8e)">JG</div>
+            <div><b>Jake George</b><small>Celiac for 11 years · London</small></div>
+          </div>
+        </article>
+        <article class="t-card t-2">
+          <div class="t-brand">🥜 Nut-allergy parent</div>
+          <blockquote>"I recently started using SafeBite to plan meals out for my son with a severe nut allergy, and the results have been incredible. It streamlines everything, removes the guesswork, and saves us a ton of stress every single week."</blockquote>
+          <div class="t-person">
+            <div class="avatar" style="background:linear-gradient(135deg,#7c9bf2,#5b6ee8)">SA</div>
+            <div><b>Steve Armenti</b><small>Parent &amp; community moderator</small></div>
+          </div>
+        </article>
+        <article class="t-card t-3">
+          <div class="t-brand">✳ Top creator</div>
+          <blockquote>"I absolutely love contributing on SafeBite — it has enabled me to build genuinely useful safe-eating guides for my city. It drives real value for my followers and pays me for it. A game-changer for our community!"</blockquote>
+          <div class="t-person">
+            <div class="avatar" style="background:linear-gradient(135deg,#5fcfb2,#37b3a0)">SR</div>
+            <div><b>Sam Rahmanian</b><small>Creator · 340 verified reviews</small></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="center-head">
+        <span class="tag">FAQ</span>
+        <h2>FAQs</h2>
+        <p>Everything you need to know before getting started</p>
+      </div>
+      <div class="faq-wrap">
+        <div class="faq-visual">
+          <div class="mock">
+            <h4>Safety check · Thai Garden</h4>
+            <div class="mock-row"><span class="num">1</span> Menu verified by staff <span class="pill-ok">Safe</span></div>
+            <div class="mock-row"><span class="num">2</span> 38 community reviews <span class="pill-ok">Safe</span></div>
+            <div class="mock-row"><span class="num">3</span> Cross-contamination check <span class="pill-ok">98%</span></div>
+            <div class="mock-row"><span class="num">4</span> Oliv Potter recommends <span class="pill-ok">✓</span></div>
+          </div>
+        </div>
+        <div class="faq-list" id="faqList">
+          <div class="faq-item open">
+            <button class="faq-q">How does SafeBite verify that food is safe? <span class="chev">▾</span></button>
+            <div class="faq-a"><div>Every listing combines three layers: menus verified directly with restaurant staff, ingredient cross-checks against allergen databases, and live reviews from community members with your exact allergy profile.</div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Is my health data secure? <span class="chev">▾</span></button>
+            <div class="faq-a"><div>Yes. Your allergy profile is encrypted end-to-end, never sold to third parties, and you control exactly what is shared with the community. We are fully GDPR and HIPAA compliant.</div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Can I use SafeBite when travelling abroad? <span class="chev">▾</span></button>
+            <div class="faq-a"><div>Absolutely. SafeBite covers 40+ countries and automatically translates your allergy profile into the local language, including printable allergy cards you can show restaurant staff.</div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Is there a free trial? <span class="chev">▾</span></button>
+            <div class="faq-a"><div>Yes — the core search and community features are free forever. Premium adds offline maps, travel translations, and creator monetization, with a 14-day free trial and no credit card required.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta" id="contact">
+      <span class="tag">Get started</span>
+      <h2>Eat out without fear,<br>starting today!</h2>
+      <a href="#" class="btn btn-dark cta-start" style="padding:14px 32px">Start free</a>
+      <div class="dash-mock">
+        <div class="dash-stat"><div class="lbl">Safe spots saved</div><div class="val">24</div><div class="chg">↑ 6 this week</div></div>
+        <div class="dash-stat"><div class="lbl">Safety score</div><div class="val">88%</div><div class="chg">↑ 2.4%</div></div>
+        <div class="dash-stat"><div class="lbl">Reviews written</div><div class="val">12</div><div class="chg">↑ 3 new</div></div>
+        <div class="dash-stat"><div class="lbl">Creator earnings</div><div class="val">$76</div><div class="chg">↑ $18</div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="logo" href="#" style="color:#fff" onclick="goHome(event)">
+          <span class="logo-badge">🍽️</span> SafeBite
+        </a>
+        <p>Helping people with allergies and dietary restrictions eat normally and find safely — everywhere.</p>
+      </div>
+      <div>
+        <h5>Product</h5>
+        <ul>
+          <li><a href="#features">Find Safely</a></li>
+          <li><a href="#features">Community</a></li>
+          <li><a href="#features">Creator Program</a></li>
+          <li><a href="#pricing" data-page="Pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#about" data-page="About">About us</a></li>
+          <li><a href="#blog" data-page="Blog">Blog</a></li>
+          <li><a href="#careers" data-page="Careers">Careers</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#privacy" data-page="Privacy Policy">Privacy Policy</a></li>
+          <li><a href="#terms" data-page="Terms of Service">Terms of Service</a></li>
+          <li><a href="#cookies" data-page="Cookie Policy">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2025 SafeBite Inc. All rights reserved.</span>
+      <button class="demo-toggle" id="demoToggle">Demo: toggle logged-in state</button>
+    </div>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- state ---------- */
+const isLoggedIn = () => localStorage.getItem('safebite_loggedIn') === '1';
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ---------- apply login state to CTAs ---------- */
+function applyAuthState(){
+  const logged = isLoggedIn();
+  const startBtns = [document.getElementById('startFreeBtn'), ...document.querySelectorAll('.cta-start')];
+  startBtns.forEach(b=>{
+    if(!b) return;
+    b.textContent = logged ? 'Go to Dashboard' : 'Start free';
+  });
+  const navCta = document.getElementById('navCta');
+  navCta.textContent = logged ? 'Dashboard' : 'Sign up';
+  document.getElementById('signInLink').textContent = logged ? 'Account' : 'Sign in';
+  const m = document.getElementById('signInLinkMobile');
+  if(m) m.textContent = logged ? 'Account' : 'Sign in';
+}
+
+/* ---------- navigation handlers ---------- */
+function goHome(e){
+  if(e) e.preventDefault();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.getElementById('logoLink').addEventListener('click', goHome);
+
+function goLoginOrDash(e){
+  e.preventDefault();
+  if(isLoggedIn()){
+    toast('Navigating to dashboard.html …');
+    // window.location.href = 'dashboard.html';
+  } else {
+    toast('Navigating to login.html …');
+    // window.location.href = 'login.html';
+  }
+}
+document.getElementById('startFreeBtn').addEventListener('click', goLoginOrDash);
+document.querySelectorAll('.cta-start').forEach(b=>b.addEventListener('click', goLoginOrDash));
+document.getElementById('navCta').addEventListener('click', goLoginOrDash);
+document.getElementById('signInLink').addEventListener('click', goLoginOrDash);
+document.getElementById('signInLinkMobile').addEventListener('click', goLoginOrDash);
+
+/* "See how it works" → smooth scroll handled by anchor; close mobile menu on any link */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const page = a.dataset.page;
+    if(page){
+      e.preventDefault();
+      toast('Navigating to ' + page + ' page …');
+    }
+    document.getElementById('mobileMenu').classList.remove('open');
+  });
+});
+
+/* ---------- mobile menu ---------- */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', ()=> mobileMenu.classList.toggle('open'));
+document.addEventListener('click', e=>{
+  if(!mobileMenu.contains(e.target) && e.target !== hamburger) mobileMenu.classList.remove('open');
+});
+
+/* ---------- FAQ accordion ---------- */
+document.querySelectorAll('.faq-q').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const item = btn.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  });
+});
+
+/* ---------- hero chat ---------- */
+function fillSuggest(el){
+  document.getElementById('chatInput').value = el.textContent.trim();
+  document.getElementById('chatInput').focus();
+}
+document.getElementById('chatForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const v = document.getElementById('chatInput').value.trim();
+  if(!v){ toast('Type a question or search first 🙂'); return; }
+  toast('Searching safe spots for: "' + (v.length>40 ? v.slice(0,40)+'…' : v) + '"');
+  document.getElementById('chatInput').value = '';
+});
+
+/* ---------- demo login toggle ---------- */
+document.getElementById('demoToggle').addEventListener('click', ()=>{
+  localStorage.setItem('safebite_loggedIn', isLoggedIn() ? '0' : '1');
+  applyAuthState();
+  toast(isLoggedIn() ? 'You are now logged in ✓' : 'You are now logged out');
+});
+
+applyAuthState();
+</script>
+</body>
+</html>
