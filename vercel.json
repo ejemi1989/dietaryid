@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd dietary && npm install && npm run build",
-  "outputDirectory": "dietary/.next",
-  "installCommand": "cd dietary && npm install"
-}
