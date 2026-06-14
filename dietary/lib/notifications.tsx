@@ -1,148 +1,57 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useEffect } from "react";
-
-export type Toast = {
-  id: string;
-  message: string;
-  link?: string;
-  timestamp: number;
-};
-
-type Listener = () => void;
+type Toast = { id: string; message: string; link?: string; timestamp: number };
 
 const toastQueue: Toast[] = [];
-const listeners = new Set<Listener>();
+let toastRoot: HTMLDivElement | null = null;
 
-function emit() {
-  listeners.forEach((fn) => fn());
+function getRoot(): HTMLDivElement {
+  if (!toastRoot && typeof document !== "undefined") {
+    toastRoot = document.createElement("div");
+    toastRoot.id = "toast-root";
+    document.body.appendChild(toastRoot);
+  }
+  return toastRoot!;
+}
+
+function render() {
+  if (typeof document === "undefined") return;
+  const root = getRoot();
+  const latest = toastQueue[0];
+  if (!latest) { root.innerHTML = ""; return; }
+
+  root.innerHTML = `
+    <div style="position:fixed;bottom:24px;right:24px;z-index:300;pointer-events:none">
+      <div style="pointer-events:auto;background:#1d1d1d;color:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.25);padding:16px;max-width:380px;animation:slideIn .3s ease-out;font-family:system-ui,sans-serif">
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div style="font-size:18px;flex-shrink:0">🔔</div>
+          <div style="flex:1;min-width:0">
+            <p style="font-size:13px;line-height:1.4;margin:0">${latest.message}</p>
+            ${latest.link ? `<a href="${latest.link}" style="display:inline-block;color:rgba(255,255,255,.7);font-size:11.5px;margin-top:4px;text-decoration:none">View →</a>` : ""}
+          </div>
+          <button onclick="document.getElementById('toast-root')!.innerHTML=''" style="color:rgba(255,255,255,.5);font-size:16px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;line-height:1" title="Dismiss">✕</button>
+        </div>
+      </div>
+      ${toastQueue.length > 1 ? `<div style="text-align:right;color:#8a8a8a;font-size:11px;margin-top:4px;pointer-events:none">+${toastQueue.length - 1} more</div>` : ""}
+    </div>
+  `;
 }
 
 export function pushToast(toast: Omit<Toast, "id" | "timestamp">) {
-  const t: Toast = { ...toast, id: `toast_${Date.now()}`, timestamp: Date.now() };
+  const t: Toast = { ...toast, id: `t_${Date.now()}`, timestamp: Date.now() };
   toastQueue.unshift(t);
   if (toastQueue.length > 50) toastQueue.length = 50;
-  emit();
+  render();
+  setTimeout(() => {
+    const idx = toastQueue.findIndex((x) => x.id === t.id);
+    if (idx !== -1) { toastQueue.splice(idx, 1); render(); }
+  }, 4000);
 }
 
-export function getToasts(): Toast[] {
-  return toastQueue;
-}
-
-export function clearToasts() {
-  toastQueue.length = 0;
-  emit();
-}
-
-export function subscribeToToasts(fn: Listener) {
-  listeners.add(fn);
-  return () => { listeners.delete(fn); };
-}
+export const notifyUser = (message: string, link?: string) => pushToast({ message, link });
+export const notifyAdmin = (message: string, link?: string) => pushToast({ message, link });
+export const notifyRestaurant = (message: string, link?: string) => pushToast({ message, link });
 
 let approvedFlag = false;
-
-export function approveApplication() {
-  approvedFlag = true;
-}
-
-export function consumeApproval(): boolean {
-  const val = approvedFlag;
-  approvedFlag = false;
-  return val;
-}
-
-type NotificationFn = (message: string, link?: string) => void;
-
-export const notifyUser: NotificationFn = (message, link) => {
-  pushToast({ message, link });
-};
-
-export const notifyAdmin: NotificationFn = (message, link) => {
-  pushToast({ message, link });
-};
-
-export const notifyRestaurant: NotificationFn = (message, link) => {
-  pushToast({ message, link });
-};
-
-type ToastContextType = {
-  toasts: Toast[];
-  dismiss: (id: string) => void;
-};
-
-const ToastContext = createContext<ToastContextType>({ toasts: [], dismiss: () => {} });
-
-export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = useState<Toast[]>([]);
-
-  useEffect(() => {
-    const unsub = subscribeToToasts(() => {
-      setToasts([...getToasts()]);
-    });
-    return unsub;
-  }, []);
-
-  const dismiss = useCallback((id: string) => {
-    const idx = toastQueue.findIndex((t) => t.id === id);
-    if (idx !== -1) {
-      toastQueue.splice(idx, 1);
-      setToasts([...toastQueue]);
-    }
-  }, []);
-
-  return (
-    <ToastContext.Provider value={{ toasts, dismiss }}>
-      {children}
-      <ToastRenderer />
-    </ToastContext.Provider>
-  );
-}
-
-export function useToast() {
-  return useContext(ToastContext);
-}
-
-function ToastRenderer() {
-  const { toasts, dismiss } = useToast();
-
-  useEffect(() => {
-    if (toasts.length === 0) return;
-    const timers = toasts.map((t) =>
-      setTimeout(() => dismiss(t.id), 4000)
-    );
-    return () => timers.forEach(clearTimeout);
-  }, [toasts, dismiss]);
-
-  if (toasts.length === 0) return null;
-
-  const latest = toasts[0];
-
-  return (
-    <div className="fixed bottom-6 right-6 z-[300] pointer-events-none">
-      <div className="pointer-events-auto bg-admin-dark text-white rounded-[10px] shadow-[0_8px_30px_rgba(0,0,0,0.25)] p-4 max-w-[380px] animate-[slideIn_0.3s_ease-out]">
-        <div className="flex items-start gap-3">
-          <div className="text-[18px] flex-shrink-0">🔔</div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] leading-[1.4]">{latest.message}</p>
-            {latest.link && (
-              <a href={latest.link} className="text-[11.5px] text-white/70 hover:text-white mt-1 inline-block no-underline hover:underline">
-                View →
-              </a>
-            )}
-          </div>
-          <button
-            onClick={() => dismiss(latest.id)}
-            className="text-white/50 hover:text-white text-[16px] flex-shrink-0"
-          >
-            ✕
-          </button>
-        </div>
-      </div>
-      {toasts.length > 1 && (
-        <div className="text-[11px] text-admin-muted text-right mt-1 pointer-events-none">
-          +{toasts.length - 1} more
-        </div>
-      )}
-    </div>
-  );
-}
+export function approveApplication() { approvedFlag = true; }
+export function consumeApproval(): boolean { const v = approvedFlag; approvedFlag = false; return v; }

@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import { UserSidebar } from "@/components/dashboard/UserSidebar";
-import { ToastProvider } from "@/lib/notifications";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <ToastProvider>
     <div className="flex h-screen w-screen overflow-x-hidden bg-admin-bg text-admin-text">
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -28,6 +26,5 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         {children}
       </main>
     </div>
-    </ToastProvider>
   );
 }

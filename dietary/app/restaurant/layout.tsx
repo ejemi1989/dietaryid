@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { ToastProvider } from "@/lib/notifications";
 
 type NavItem = {
   label: string;
@@ -177,7 +176,6 @@ export default function RestaurantLayout({ children }: { children: React.ReactNo
   }, [searchOpen]);
 
   return (
-    <ToastProvider>
     <div className="flex h-screen w-screen overflow-x-hidden bg-admin-bg text-admin-text">
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -341,6 +339,5 @@ export default function RestaurantLayout({ children }: { children: React.ReactNo
 
       <main className="flex-1 flex flex-col overflow-hidden">{children}</main>
     </div>
-    </ToastProvider>
   );
 }
