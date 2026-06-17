@@ -108,7 +108,19 @@ export default function MessagesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [prefillUser, setPrefillUser] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const withUser = params.get("with");
+      if (withUser) {
+        setPrefillUser(withUser);
+        setShowNewMessage(true);
+      }
+    }
+  }, []);
 
   const active = threads.find((t) => t.id === activeId);
   const filtered = threads.filter((t) =>
@@ -445,12 +457,13 @@ export default function MessagesPage() {
       )}
 
       {showNewMessage && (
-        <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center px-4" onClick={() => setShowNewMessage(false)}>
+        <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center px-4" onClick={() => { setShowNewMessage(false); setPrefillUser(""); }}>
           <div className="bg-admin-bg border border-admin-border rounded-[10px] p-6 max-w-[420px] w-full" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-[16px] font-semibold text-admin-text mb-3">New message</h3>
             <input
               type="text"
               placeholder="Search people to message..."
+              defaultValue={prefillUser}
               className="w-full px-3 py-2 border border-admin-border rounded-md text-[14px] bg-admin-bg text-admin-text outline-none focus:border-admin-dark"
             />
             <div className="mt-3 space-y-1.5 max-h-[280px] overflow-y-auto">
@@ -459,24 +472,35 @@ export default function MessagesPage() {
                 { name: "Lisa P.", restriction: "Has IBS", avatar: "https://i.pravatar.cc/80?u=lisa" },
                 { name: "Tom R.", restriction: "Has Dairy Allergy", avatar: "https://i.pravatar.cc/80?u=tom" },
                 { name: "Aisha K.", restriction: "Has Nut Allergy", avatar: "https://i.pravatar.cc/80?u=aisha" },
+                ...(prefillUser && !["Jordan L.", "Lisa P.", "Tom R.", "Aisha K."].includes(prefillUser) ? [
+                  { name: prefillUser, restriction: "DietaryID Member", avatar: `https://i.pravatar.cc/80?u=${prefillUser}` }
+                ] : []),
               ].map((p) => (
                 <button
                   key={p.name}
                   onClick={() => {
-                    const newThread: Thread = {
-                      id: `t_${Date.now()}`,
-                      user: { ...p, online: false, bio: p.restriction },
-                      lastMessage: "",
-                      lastTime: "now",
-                      unread: 0,
-                      pinned: false,
-                      messages: [],
-                    };
-                    setThreads((prev) => [newThread, ...prev]);
-                    setActiveId(newThread.id);
+                    const existing = threads.find((t) => t.user.name === p.name);
+                    if (existing) {
+                      setActiveId(existing.id);
+                    } else {
+                      const newThread: Thread = {
+                        id: `t_${Date.now()}`,
+                        user: { ...p, online: false, bio: p.restriction },
+                        lastMessage: "",
+                        lastTime: "now",
+                        unread: 0,
+                        pinned: false,
+                        messages: [],
+                      };
+                      setThreads((prev) => [newThread, ...prev]);
+                      setActiveId(newThread.id);
+                    }
                     setShowNewMessage(false);
+                    setPrefillUser("");
                   }}
-                  className="w-full flex items-center gap-3 p-2.5 rounded-md border border-admin-border hover:bg-admin-hover text-left"
+                  className={`w-full flex items-center gap-3 p-2.5 rounded-md border hover:bg-admin-hover text-left ${
+                    prefillUser === p.name ? "border-admin-dark bg-admin-hover" : "border-admin-border"
+                  }`}
                 >
                   <img src={p.avatar} alt="" className="w-9 h-9 rounded-full" />
                   <div>
@@ -487,7 +511,7 @@ export default function MessagesPage() {
               ))}
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <button onClick={() => setShowNewMessage(false)} className="text-[13px] px-4 py-2 rounded-md border border-admin-border text-admin-text hover:bg-admin-hover">Cancel</button>
+              <button onClick={() => { setShowNewMessage(false); setPrefillUser(""); }} className="text-[13px] px-4 py-2 rounded-md border border-admin-border text-admin-text hover:bg-admin-hover">Cancel</button>
             </div>
           </div>
         </div>

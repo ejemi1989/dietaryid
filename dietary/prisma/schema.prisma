@@ -49,15 +49,20 @@ model FollowRelation {
 }
 
 model Message {
-  id            String   @id @default(cuid())
-  senderId      String
-  sender        User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  recipientId   String?
-  content       String
-  isRead        Boolean  @default(false)
-  createdAt     DateTime @default(now())
+  id              String   @id @default(cuid())
+  senderId        String
+  sender          User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  recipientId     String?
+  content         String
+  isRead          Boolean  @default(false)
+  status          String   @default("active")
+  flaggedReason   String?
+  moderatedBy     String?
+  moderatedAt     DateTime?
+  createdAt       DateTime @default(now())
   @@index([senderId])
   @@index([recipientId])
+  @@index([status])
 }
 
 model Restaurant {

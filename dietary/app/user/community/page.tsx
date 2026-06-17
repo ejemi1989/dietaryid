@@ -456,7 +456,7 @@ export default function CommunityPage() {
                               {followed.has(post.author) ? "✓ Following" : "+ Follow"}
                             </button>
                             <Link
-                              href="/user/messages"
+                              href={`/user/messages?with=${encodeURIComponent(post.author)}`}
                               className="text-[11.5px] text-admin-new-text no-underline hover:underline"
                             >
                               💬 Message

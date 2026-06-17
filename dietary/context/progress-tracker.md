@@ -517,6 +517,30 @@ _Add decisions here as they are made during implementation._
 
 ---
 
+### Feature — Community Chat & Admin Chat Moderation
+
+- **Decision:** Add message moderation fields to Prisma Message model: `status`, `flaggedReason`, `moderatedBy`, `moderatedAt`
+- **Rationale:** Enables admin moderation of direct messages — flag, ban, or delete inappropriate messages. The `status` field (active/flagged/banned) allows querying by moderation state
+- **Trade-off:** Schema change to existing Message model; backward-compatible with default "active" status
+- **Date:** Day N
+
+- **Decision:** Build admin chat moderation page at `/admin/moderation/chat` with conversation viewer, flag/ban/delete actions, and user warning system
+- **Rationale:** Admin needs to monitor all conversations on the platform, not just community posts and reviews. The page shows conversation pairs, message history, flagged counts, and per-message moderation controls (Approve, Flag, Delete, Warn User, Ban User, Unban)
+- **Trade-off:** Mock data with 6 realistic conversation scenarios (flagged, banned, warned users); real InsForge DB integration needed for production
+- **Date:** Day N
+
+- **Decision:** Add "Chat" nav item to admin sidebar under moderation section with badge count of 3
+- **Rationale:** Surfaces chat moderation alongside existing Posts and Reviews moderation. Admin sidebar now has 3 moderation items: Reviews, Posts, Chat
+- **Trade-off:** None — additive nav item
+- **Date:** Day N
+
+- **Decision:** Enhance "Message" button on community posts to pass author via `?with=` query param; messages page reads it and pre-fills new conversation modal with pre-selected user highlighted
+- **Rationale:** Users should be able to message post authors directly from the community feed. Previously the Message button just linked to `/user/messages` generically — now it opens the "New message" modal with the author pre-filled and highlighted. If the user already has an existing conversation, it selects that thread instead
+- **Trade-off:** Uses `window.location.search` instead of `useSearchParams` to avoid Suspense boundary requirement in Next.js App Router
+- **Date:** Day N
+
+---
+
 ## Daily Standup Template
 
 Copy this daily and fill in:
